@@ -7,7 +7,7 @@ base_url = "http://news.google.com"
 response1 = requests.get(base_url)
 all_news = response1.content
 soup1 = BeautifulSoup(all_news, 'html.parser')
-links = soup1.find_all('a',class_='VDXfz')
+links = soup1.select('h3 a')
 
 #Now extract the link from anchor elements and visit the link
 # 
