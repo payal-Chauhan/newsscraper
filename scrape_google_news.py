@@ -23,6 +23,7 @@ response = requests.get(base_url)
 htmlcontent = response.content
 main_soup=BeautifulSoup(htmlcontent, 'html.parser')
 main_articles = main_soup.select('article a')
+
 n=1
 index=0
 article_titles=[]
@@ -30,19 +31,27 @@ article_text=""
 article_summaries=[]
 article_dates=[]
 article_urls=[]
-while(n!=0 and n< len(main_articles)):
+while(n!=0 and index< len(main_articles)):
     
     try:
         print(base_url+main_articles[index]['href'].strip('.'))
         index=index+1
     except KeyError:
-        pass
+        continue
     #We now parse the article
-    article=Article(base_url+main_articles[index]['href'].strip('.'),language='en')
+ 
+    try:
+
+        article=Article(base_url+main_articles[index]['href'].strip('.'),language='en')
+    except KeyError:
+        continue
     article.download()
     article.parse()
     article_text=article.text
-    article_urls.append(base_url+main_articles[index]['href'].strip('.'))
+    try:
+        article_urls.append(base_url+main_articles[index]['href'].strip('.'))
+    except KeyError:
+        pass
     article_titles.append( article.title)
     article_dates.append(article.publish_date)
     article.nlp()
