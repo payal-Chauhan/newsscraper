@@ -1,12 +1,10 @@
-from newspaper import Article
+import pandas as pd
+import numpy as np
 import requests
+from newspaper import Article
+import json
 from bs4 import BeautifulSoup
 
-
-def search_keyword(word,para):
-    for sentence in para.split('.'):
-        if word in sentence:
-            print(sentence)
 
 
 
@@ -27,13 +25,21 @@ for i in links:
 
 # processing only the first link we have in our Dataset
 news_links[0] = base_url+news_links[1].strip('.')
-print(news_links[0])
+
 news = Article(news_links[0],language='en')
 news.download()
 news.parse()
 news.nlp()
+#now we have the attributes  title, summary, and url
+#we will make a json file out of them
+titles = []
+summary=[]
+titles.append(news.title)
+summary.append(news.summary)
+record= {"title": titles, "summary":summary}
+myjson = json.dumps(record)
+df = pd.DataFrame.from_dict(record)
+print(df.head(n))
 
+# wrap it up in a loop later
 
-article_text= news.text
-word = input("enter a keyword to be searched in the article: ")
-search_keyword(word,article_text)
